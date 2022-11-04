@@ -9,7 +9,7 @@ import Header from "../../components/Header/Header.js";
 export default function soldout() {
   let user = null;
   if (typeof window !== "undefined") {
-    user = JSON.parse(localStorage.getItem("accepted"));
+    user = JSON.parse(localStorage.getItem("accepted-grind"));
   }
 
   const handleRemoveLocalStorage = () => {

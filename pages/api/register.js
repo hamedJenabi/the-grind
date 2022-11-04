@@ -61,46 +61,46 @@ const getTicketLabel = (ticket) => {
   if (ticket === "partyPass") {
     return "Party Pass";
   }
-  if (ticket === "fullpass") {
+  if (ticket === "weekend_pass") {
     return "Full Pass";
   }
 };
 
 //******** prepare GOOGLE SHEET *********/
 
-const updateGoogle = async (user) => {
-  const date = new Date().toISOString();
-  const inputForGoogleSheet = {
-    status: user.status,
-    register_date: date,
-    email: user.email,
-    firstname: user.firstname,
-    lastname: user.lastname,
-    country: user.country,
-    ticket: user.ticket,
-    role: user.role,
-    level: user.level,
-    price: user.price,
-    themeClass: user.theme_class,
-    competition_role: user.competition_role,
-    competitions: user.competitions?.toString(),
-  };
-  const doc = new GoogleSpreadsheet(SPREADSHEET_ID);
-  try {
-    await doc.useServiceAccountAuth({
-      client_email: CLIENT_EMAIL,
-      private_key:
-        PRIVATE_KEY === undefined
-          ? console.log("error")
-          : PRIVATE_KEY.replace(/\\n/gm, "\n"),
-    });
-    await doc.loadInfo();
-    const sheet = doc.sheetsById[SHEET_ID];
-    const result = await sheet.addRow(inputForGoogleSheet);
-  } catch (e) {
-    console.error("Error: ", e);
-  }
-};
+// const updateGoogle = async (user) => {
+//   const date = new Date().toISOString();
+//   const inputForGoogleSheet = {
+//     status: user.status,
+//     register_date: date,
+//     email: user.email,
+//     firstname: user.firstname,
+//     lastname: user.lastname,
+//     country: user.country,
+//     ticket: user.ticket,
+//     role: user.role,
+//     level: user.level,
+//     price: user.price,
+//     themeClass: user.theme_class,
+//     competition_role: user.competition_role,
+//     competitions: user.competitions?.toString(),
+//   };
+//   // const doc = new GoogleSpreadsheet(SPREADSHEET_ID);
+//   try {
+//     await doc.useServiceAccountAuth({
+//       client_email: CLIENT_EMAIL,
+//       private_key:
+//         PRIVATE_KEY === undefined
+//           ? console.log("error")
+//           : PRIVATE_KEY.replace(/\\n/gm, "\n"),
+//     });
+//     await doc.loadInfo();
+//     const sheet = doc.sheetsById[SHEET_ID];
+//     const result = await sheet.addRow(inputForGoogleSheet);
+//   } catch (e) {
+//     console.error("Error: ", e);
+//   }
+// };
 
 export default async function register(req, response) {
   const requestData = {
@@ -111,33 +111,24 @@ export default async function register(req, response) {
     country: req.body.country,
     role: req.body.role ?? "",
     ticket: req.body.ticket ?? "",
-    level: req.body.level,
-    theme_class: req.body.theme_class,
-    competition: req.body.competition,
-    competition_role: req.body.competition_role,
-    competitions: req.body.competitions,
+    price: req.body.price ?? 90,
     terms: req.body.terms,
   };
-  const ticketName =
-    requestData.ticket === "partyPass"
-      ? requestData.ticket
-      : `fullpass_${requestData.level}`;
-  console.log("ticketName", ticketName);
-  const { id: ticketId } = await getTicketByName(ticketName);
+
+  const { id: ticketId } = await getTicketByName("weekend_pass");
   const { capacity } = await isTicketAvailable(ticketId);
   const { waiting_list } = await isTicketAvailable(ticketId);
 
-  const totalPrice = requestData.ticket === "partyPass" ? 35 : 110;
-
+  const totalPrice = requestData.price;
+  console.log("totalPrice", totalPrice);
   ///////   TODO: GET TOTAL PRICE ///////
-  const level = getLevelLabel(requestData.level);
   const ticket = getTicketLabel(requestData.ticket);
   const userswithSameEmail = await getUserByEmailAndName(requestData.email);
   let isAlreadyRegistered = false;
   if (userswithSameEmail) {
     isAlreadyRegistered =
       userswithSameEmail.email + userswithSameEmail.firstname ===
-      requestData.email + requestData.firstname + "noob";
+      requestData.email + requestData.firstname;
   }
   let template = "";
   let isSoldOut = false;
@@ -157,7 +148,7 @@ export default async function register(req, response) {
 
     const [{ id }] = await insertRegistration(user);
     template = "d-a3d0a3b2f11f4c0d8c9008e9db9fa07d";
-    await updateGoogle(user);
+    // await updateGoogle(user);
 
     response.status(200).json();
     // send registration email

@@ -1,7 +1,7 @@
 exports.up = async (sql) => {
   await sql`
 	  INSERT INTO tickets (name,capacity,waiting_list) VALUES   									
-			  ('partyPass',250,100)
+			  ('weekend_pass',250,100)
 	  `;
 };
 

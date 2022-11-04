@@ -22,11 +22,10 @@ const flatProps = {
   options: countries.map((option) => option.title),
 };
 export default function RegistrationForm({ form, tickets, isClicked }) {
-  console.log("tiocket", levelsToShow);
   const dialog = useDialogState();
   const handleTicket = (ticket) => {
     if (ticket === 1) {
-      form.update("ticket", "fullpass");
+      form.update("ticket", "weekend_pass");
     } else {
       form.update("ticket", "partyPass");
       form.update("role", "");
@@ -114,40 +113,46 @@ export default function RegistrationForm({ form, tickets, isClicked }) {
             <div
               onClick={() => handleTicket(1)}
               className={classNames(styles.card, {
-                [styles.selected]: form.values.ticket === "fullpass",
+                [styles.selected]: form.values.ticket === "weekend_pass",
               })}
             >
-              <h3>Full pass</h3>
-              <p>4 hours classes</p>
-              <p>2 Parties</p>
+              <h3>Weekend pass</h3>
+              <p>4 Parties</p>
               <p>€110</p>
             </div>
           </div>
-          {form.values.ticket === "fullpass" && (
+
+          {form.values.ticket === "weekend_pass" && (
             <>
-              <h3 className={styles.title}>Choose your Level:</h3>
+              <h3 className={styles.title}>Choose your primary dance role:</h3>
               <FormRadioGroup
                 className={styles.radioGroup}
                 {...form}
-                name="level"
+                name="role"
               >
-                {levelsToShow.map(({ label, value, detail }) => (
-                  <label key={value}>
-                    <FormRadio
-                      disabled={disabled(value)}
-                      {...form}
-                      name="level"
-                      value={value}
-                    />
-                    <p>
-                      {label} {disabled(value) ? "(Fully Booked)" : ""}
-                    </p>
-                    <InfoModal header={label} info={detail} />
-                  </label>
-                ))}
+                <label>
+                  <FormRadio {...form} name="role" value="follow" />{" "}
+                  <p>Mainly follower</p>
+                </label>
+                <label>
+                  <FormRadio {...form} name="role" value="lead" />
+                  <p> Mainly leader</p>
+                </label>
               </FormRadioGroup>
             </>
           )}
+          <h3 className={styles.title}>I want to pay:</h3>
+          <FormRadioGroup className={styles.radioGroup} {...form} name="price">
+            <label>
+              <FormRadio {...form} name="price" value={90} /> <p>€90</p>
+            </label>
+            <label>
+              <FormRadio {...form} name="price" value={100} /> <p>€100</p>
+            </label>
+            <label>
+              <FormRadio {...form} name="price" value={110} /> <p>€110</p>
+            </label>
+          </FormRadioGroup>
 
           <div className={styles.checkboxWrapper}>
             <FormCheckbox {...form} name="terms" />
@@ -156,16 +161,7 @@ export default function RegistrationForm({ form, tickets, isClicked }) {
               <a
                 style={{ color: "blue" }}
                 rel="noreferrer"
-                href="https://www.bluesfever.eu/terms-conditions/"
-                target="_blank"
-              >
-                Terms and Conditions
-              </a>{" "}
-              and{" "}
-              <a
-                style={{ color: "blue" }}
-                rel="noreferrer"
-                href="https://www.bluesfever.eu/code-of-conduct/"
+                href="https://www.thegrindhelsinki.com/coc"
                 target="_blank"
               >
                 Code of Conduct.

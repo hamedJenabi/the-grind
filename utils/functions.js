@@ -1,4 +1,5 @@
-export const titleCase = (s) =>
+export const titleCase = (s = "no") =>
+  s ||
   s?.replace(/^_*(.)|_+(.)/g, (s, c, d) =>
     c ? c.toUpperCase() : " " + d.toUpperCase()
   );
@@ -27,7 +28,7 @@ export const getPrice = (requestData, isGroupDiscount) => {
   const theme_class =
     requestData.theme_class === "no" || requestData.theme_class === "" ? 0 : 40;
   const fullPassdiscount =
-    requestData.ticket === "fullpass" &&
+    requestData.ticket === "weekend_pass" &&
     requestData.competition === "yes" &&
     requestData.competitions?.length > 0
       ? -10

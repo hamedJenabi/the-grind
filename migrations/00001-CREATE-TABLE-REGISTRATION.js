@@ -7,6 +7,8 @@ exports.up = async (sql) => {
 			firstname VARCHAR (100) NOT NULL, 
 			lastname VARCHAR (100) NOT NULL, 
 			email VARCHAR NOT NULL, 
+			ticket VARCHAR NOT NULL,
+			role VARCHAR (100),
 			country VARCHAR, 
 			price VARCHAR (100),
 			terms boolean

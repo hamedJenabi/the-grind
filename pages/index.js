@@ -1,5 +1,4 @@
 import Head from "next/head";
-import useMedia from "use-media";
 import Router from "next/router";
 import React, { useState } from "react";
 import dynamic from "next/dynamic";
@@ -13,7 +12,6 @@ const RegistrationForm = dynamic(
 import { unstable_useFormState as useFormState } from "reakit/Form";
 
 export default function Home({ tickets }) {
-  const isMobile = useMedia({ maxWidth: "768px" });
   const [isClicked, setIsClicked] = useState(false);
 
   if (typeof window !== "undefined") {
@@ -26,8 +24,9 @@ export default function Home({ tickets }) {
       lastname: "",
       email: "",
       country: "",
-      ticket: "",
-      level: "",
+      ticket: "weekend_pass",
+      role: "",
+      price: 90,
       terms: false,
     },
     onValidate: (values) => {
@@ -66,11 +65,11 @@ export default function Home({ tickets }) {
       })
         .then((response) => {
           if (response.status === 200) {
-            localStorage.setItem("accepted", JSON.stringify(form.values));
+            localStorage.setItem("accepted-grind", JSON.stringify(form.values));
             Router.push("/accept");
           }
           if (response.status === 300) {
-            localStorage.setItem("accepted", JSON.stringify(form.values));
+            localStorage.setItem("accepted-grind", JSON.stringify(form.values));
             Router.push("/waitinglist");
           }
 

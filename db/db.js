@@ -81,7 +81,7 @@ export async function insertRegistration(user) {
     lastname: user.lastname,
     country: user.country,
     ticket: user.ticket,
-    level: user.level,
+    role: user.role,
     price: user.price,
     terms: user.terms,
   };
@@ -95,7 +95,7 @@ export async function insertRegistration(user) {
     "lastname",
     "country",
     "ticket",
-    "level",
+    "role",
     "price",
     "terms"
   )}

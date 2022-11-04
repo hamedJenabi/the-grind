@@ -37,7 +37,7 @@ const getTicketLabel = (ticket) => {
   if (ticket === "partyPass") {
     return "Party Pass";
   }
-  if (ticket === "fullpass") {
+  if (ticket === "weekend_pass") {
     return "Full Pass";
   }
 };
@@ -85,7 +85,7 @@ export default async function edituser(req, response) {
         ? 0
         : 40;
     const fullPassdiscount =
-      requestData.ticket === "fullpass" &&
+      requestData.ticket === "weekend_pass" &&
       requestData.competition === "yes" &&
       requestData.competitions?.length > 0
         ? -10
