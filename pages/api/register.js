@@ -147,7 +147,7 @@ export default async function register(req, response) {
     };
 
     const [{ id }] = await insertRegistration(user);
-    template = "d-a3d0a3b2f11f4c0d8c9008e9db9fa07d";
+    template = "d-e856399171c4418ca63e88b5ae2cb877";
     // await updateGoogle(user);
 
     response.status(200).json();
@@ -208,7 +208,7 @@ export default async function register(req, response) {
   //   }
   // };
   if (!isSoldOut) {
-    // await sendEmail(msg);
+    await sendEmail(msg);
   }
   // await sendEmail(user.status, msg);
 }
