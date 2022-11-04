@@ -117,8 +117,7 @@ export default function RegistrationForm({ form, tickets, isClicked }) {
               })}
             >
               <h3>Weekend pass</h3>
-              <p>4 Parties</p>
-              <p>€110</p>
+              <p>€90</p>
             </div>
           </div>
 

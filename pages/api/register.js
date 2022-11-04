@@ -114,7 +114,7 @@ export default async function register(req, response) {
     price: req.body.price ?? 90,
     terms: req.body.terms,
   };
-
+  console.log("request data", requestData);
   const { id: ticketId } = await getTicketByName("weekend_pass");
   const { capacity } = await isTicketAvailable(ticketId);
   const { waiting_list } = await isTicketAvailable(ticketId);
@@ -185,13 +185,14 @@ export default async function register(req, response) {
     }
   }
   const msg = {
-    from: "registration@bluesfever.eu",
+    from: "thegrindhelsinki@gmail.com",
     to: `${requestData.email}`,
     template_id: template,
     dynamic_template_data: {
       firstname: `${requestData.firstname}`,
       lastname: `${requestData.lastname}`,
       country: `${requestData.country}`,
+      role: `${requestData.role}`,
       level: `${getLevelLabelForEmail(requestData.level)}`,
       ticket: `${ticket}`,
       terms: `${requestData.terms}`,
@@ -199,6 +200,7 @@ export default async function register(req, response) {
       price: `${totalPrice}`,
     },
   };
+  console.log("msg", msg);
   // const generageMessage = () => {
   //   if (user.status === "registered") {
   //     return "message";
