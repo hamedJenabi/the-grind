@@ -37,8 +37,12 @@ export default function Home({ tickets }) {
       <main className={styles.main}>
         <div className={styles.content}>
           <div className={styles.title}>
-            <h3>You are already registered for VSB 2022!</h3>
-            <p>Check you email for more information.</p>
+            <h3>You are already registered</h3>
+            <p>
+              Please note that your registration confirmation e-mail may end up
+              in your junk mail or promotions folder so make sure to check
+              those.
+            </p>
           </div>
         </div>
       </main>

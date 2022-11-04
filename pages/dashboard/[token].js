@@ -502,13 +502,15 @@ export default function Dashboard({ users, tickets }) {
                   onChange={(e) => setStatus(e.target.value)}
                   className={styles.select}
                 >
-                  <option>registered</option>
-                  <option>email-sent</option>
-                  <option>reminder</option>
-                  <option>waitinglist</option>
-                  <option>confirmed</option>
-                  <option>canceled</option>
-                  <option>out</option>
+                  <option value="registered">1. Registration received</option>
+                  <option value="email-sent">
+                    2. Registration confirmation
+                  </option>
+                  <option value="confirmed">3. Payment received</option>
+                  <option value="reminder">4. Payment Reminder</option>
+                  <option value="waitinglist">5. Waiting list</option>
+                  <option value="canceled">6. registration canceled</option>
+                  <option value="out">7. Kick out</option>
                 </select>
                 <button
                   className={styles.statusButton}
