@@ -135,7 +135,11 @@ export default function RegistrationForm({ form, tickets, isClicked }) {
                 </label>
                 <label>
                   <FormRadio {...form} name="role" value="lead" />
-                  <p> Mainly leader</p>
+                  <p>Mainly leader</p>
+                </label>
+                <label>
+                  <FormRadio {...form} name="role" value="switch" />
+                  <p>True Switch</p>
                 </label>
               </FormRadioGroup>
             </>
