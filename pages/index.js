@@ -26,6 +26,7 @@ export default function Home({ tickets }) {
       country: "",
       ticket: "weekend_pass",
       role: "",
+      message: "",
       price: 90,
       terms: false,
     },

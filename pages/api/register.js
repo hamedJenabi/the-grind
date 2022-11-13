@@ -58,11 +58,8 @@ const getLevelLabelForEmail = (level) => {
 };
 
 const getTicketLabel = (ticket) => {
-  if (ticket === "partyPass") {
-    return "Party Pass";
-  }
   if (ticket === "weekend_pass") {
-    return "Full Pass";
+    return "Weekend Pass";
   }
 };
 
@@ -111,16 +108,17 @@ export default async function register(req, response) {
     country: req.body.country,
     role: req.body.role ?? "",
     ticket: req.body.ticket ?? "",
+    message: req.body.message ?? "",
     price: req.body.price ?? 90,
     terms: req.body.terms,
   };
-  console.log("request data", requestData);
+
   const { id: ticketId } = await getTicketByName("weekend_pass");
   const { capacity } = await isTicketAvailable(ticketId);
   const { waiting_list } = await isTicketAvailable(ticketId);
 
   const totalPrice = requestData.price;
-  console.log("totalPrice", totalPrice);
+
   ///////   TODO: GET TOTAL PRICE ///////
   const ticket = getTicketLabel(requestData.ticket);
   const userswithSameEmail = await getUserByEmailAndName(requestData.email);
@@ -158,26 +156,26 @@ export default async function register(req, response) {
     // 200 -> registered
     // 300 -> waiting list
     // 301 -> sold out
-    if (waiting_list > 0) {
-      await updateTicketWaiting(ticketId);
-      const user = {
-        status: "waitinglist",
-        price: totalPrice.toString(),
-        ...requestData,
-      };
-      template = "d-52a8e8e3cff741c583127915ee291c39";
-      const [{ id }] = await insertRegistration(user);
-      // const userWithId = {
-      //   id,
-      //   status: "waitinglist",
-      //   requestData,
-      // };
-      // await updateUserInfo(userWithId);
-      // await updateGoogle(user);
-      response.status(300).json();
+    // if (waiting_list > 0) {
+    //   await updateTicketWaiting(ticketId);
+    //   const user = {
+    //     status: "waitinglist",
+    //     price: totalPrice.toString(),
+    //     ...requestData,
+    //   };
+    //   template = "d-52a8e8e3cff741c583127915ee291c39";
+    //   const [{ id }] = await insertRegistration(user);
+    //   // const userWithId = {
+    //   //   id,
+    //   //   status: "waitinglist",
+    //   //   requestData,
+    //   // };
+    //   // await updateUserInfo(userWithId);
+    //   // await updateGoogle(user);
+    //   response.status(300).json();
 
-      // waiting list email
-    }
+    //   // waiting list email
+    // }
     if (waiting_list <= 0 && !isAlreadyRegistered) {
       isSoldOut = true;
       // send sold out email

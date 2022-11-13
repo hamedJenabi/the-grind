@@ -156,7 +156,17 @@ export default function RegistrationForm({ form, tickets, isClicked }) {
               <FormRadio {...form} name="price" value={110} /> <p>€110</p>
             </label>
           </FormRadioGroup>
-
+          <h3 className={styles.personalTitle}>Any message?</h3>
+          <FormInput
+            required
+            {...form}
+            defaultValue={form.values.firstName}
+            className={styles.input}
+            name="message"
+            as="textarea"
+            maxlength={550}
+            placeholder="Write your message here"
+          />
           <div className={styles.checkboxWrapper}>
             <FormCheckbox {...form} name="terms" />
             <FormLabel {...form} name="terms">

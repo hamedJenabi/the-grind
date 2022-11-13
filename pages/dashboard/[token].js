@@ -7,7 +7,7 @@ import React, { useState } from "react";
 import styles from "./Dashboard.module.scss";
 import Header from "../../components/Header/Header.js";
 import classNames from "classnames";
-import { levelsToShow, titleCase } from "../../utils/functions";
+import { levelsToShow, titleCase, statusList } from "../../utils/functions";
 import { unstable_FormCheckbox as FormCheckbox } from "reakit/Form";
 import { unstable_useFormState as useFormState } from "reakit/Form";
 
@@ -86,75 +86,74 @@ export default function Dashboard({ users, tickets }) {
     alert("done");
   };
   const BalanceComponent = () => {
-    const getTicketAmount = (level, role) => {
+    const getTicketAmount = (role, status) => {
       const registerAmount = users.filter(
-        (user) =>
-          user["level"] === level &&
-          user["role"] === role &&
-          user["status"] === "registered"
+        (user) => user["role"] === role && user["status"] === status
       );
-      const ammount = users.filter(
-        (user) =>
-          user["level"] === level &&
-          user["role"] === role &&
-          user["status"] === "email-sent"
-      );
-      const ammountReminder = users.filter(
-        (user) =>
-          user["level"] === level &&
-          user["role"] === role &&
-          user["status"] === "reminder"
-      );
-      const ammountWaiting = users.filter(
-        (user) =>
-          user["level"] === level &&
-          user["role"] === role &&
-          user["status"] === "waitinglist"
-      );
-      const ammountPaid = users.filter(
-        (user) =>
-          user["level"] === level &&
-          user["role"] === role &&
-          user["status"] === "confirmed"
-      );
-      return {
-        registered: registerAmount.length,
-        sent: ammount.length,
-        reminder: ammountReminder.length,
-        waiting: ammountWaiting.length,
-        paid: ammountPaid.length,
-      };
+      // const ammount = users.filter(
+      //   (user) =>
+      //     user["level"] === level &&
+      //     user["role"] === role &&
+      //     user["status"] === "email-sent"
+      // );
+      // const ammountReminder = users.filter(
+      //   (user) =>
+      //     user["level"] === level &&
+      //     user["role"] === role &&
+      //     user["status"] === "reminder"
+      // );
+      // const ammountWaiting = users.filter(
+      //   (user) =>
+      //     user["level"] === level &&
+      //     user["role"] === role &&
+      //     user["status"] === "waitinglist"
+      // );
+      // const ammountPaid = users.filter(
+      //   (user) =>
+      //     user["level"] === level &&
+      //     user["role"] === role &&
+      //     user["status"] === "confirmed"
+      // );
+      // return {
+      //   registered: registerAmount.length,
+      //   sent: ammount.length,
+      //   reminder: ammountReminder.length,
+      //   waiting: ammountWaiting.length,
+      //   paid: ammountPaid.length,
+      // };
+      return registerAmount.length;
     };
 
     return (
       <div className={styles.balanceComponent}>
         <div className={styles.ticketRow}>
-          <p>Level</p>
-          <p> Follow</p>
-          <p>Lead</p>
-        </div>
-        {levelsToShow.map((lvl) => (
-          <div key={lvl.value} className={styles.ticketRow}>
-            <h4>{lvl.value}</h4>
-            <p>
-              register: {getTicketAmount(lvl.value, "follow").registered} <br />
-              send: {getTicketAmount(lvl.value, "follow").sent}
-              <br />
-              reminder: {getTicketAmount(lvl.value, "follow").reminder}
-              <br />
-              waitinglist: {getTicketAmount(lvl.value, "follow").waiting}
-              <br />
-              confirmed: {getTicketAmount(lvl.value, "follow").paid}
-            </p>
-            <p>
-              register: {getTicketAmount(lvl.value, "lead").registered} <br />
-              send: {getTicketAmount(lvl.value, "lead").sent} <br />
-              reminder: {getTicketAmount(lvl.value, "lead").reminder} <br />
-              waitinglist: {getTicketAmount(lvl.value, "lead").waiting} <br />
-              confirmed: {getTicketAmount(lvl.value, "lead").paid}
-            </p>
+          <div className={styles.ticketAmount}>
+            <h4>Follow</h4>
+            {statusList.map((status) => (
+              <p key={status.value}>
+                {status.label}: {getTicketAmount("follow", status.value)}
+              </p>
+            ))}
           </div>
-        ))}
+          <div className={styles.ticketAmount}>
+            <h4>Lead</h4>
+
+            {statusList.map((status) => (
+              <p key={status.value}>
+                {status.label}: {getTicketAmount("lead", status.value)}
+              </p>
+            ))}
+          </div>
+          <div className={styles.ticketAmount}>
+            <h4>Switch</h4>
+
+            {statusList.map((status) => (
+              <p key={status.value}>
+                {status.label}: {getTicketAmount("switch", status.value)}
+              </p>
+            ))}
+          </div>
+        </div>
       </div>
     );
   };
@@ -222,12 +221,8 @@ export default function Dashboard({ users, tickets }) {
       "lastname",
       "ticket",
       "role",
-      "level",
-      "theme_class",
-      "competition",
-      "competition_role",
-      "competitions",
       "country",
+      "message",
       "terms",
     ];
     return header.map((key, index) => {
@@ -260,6 +255,11 @@ export default function Dashboard({ users, tickets }) {
     );
   };
   //--------- Table Data
+  const getStatusLabel = (status) => {
+    const { label } = statusList.find((item) => item.value === status);
+    return label;
+  };
+
   const renderTableData = () => {
     return userToShow
       .filter((user) =>
@@ -279,11 +279,7 @@ export default function Dashboard({ users, tickets }) {
           ticket,
           lastname,
           country,
-          theme_class,
-          level,
-          competition,
-          competition_role,
-          competitions,
+          message,
           email,
         }) => {
           return (
@@ -307,7 +303,7 @@ export default function Dashboard({ users, tickets }) {
                   />
                 </label>
               </td>
-              <td>{status}</td>
+              <td>{getStatusLabel(status)}</td>
               <td>{price}</td>
               <td>{date}</td>
               <td>
@@ -324,30 +320,8 @@ export default function Dashboard({ users, tickets }) {
               <td>{lastname}</td>
               <td>{ticket}</td>
               <td>{role}</td>
-              <td>{level}</td>
-              <td>{titleCase(theme_class)}</td>
-              <td>{competition}</td>
-              <td>{competition_role}</td>
-              <td>
-                {competitions && (
-                  <div style={{ display: "flex", gap: "10px" }}>
-                    {competitions.split(",").map((comp) => (
-                      <p
-                        key={comp}
-                        style={{
-                          border: "1px solid blue",
-                          padding: "1px 2px",
-                          fontSize: "12px",
-                        }}
-                      >
-                        {titleCase(comp)}
-                      </p>
-                    ))}
-                  </div>
-                )}
-              </td>
-
               <td>{country}</td>
+              <td>{message ? "One Message" : "NO Message"}</td>
               <td>Yes</td>
             </tr>
           );
@@ -401,82 +375,17 @@ export default function Dashboard({ users, tickets }) {
           >
             <p>All</p>
           </div>
-          <div
-            onClick={() => handleSideBarClick("registered")}
-            className={classNames(styles.sideBarItem, {
-              [styles.active]: activeSideBar === "registered",
-            })}
-          >
-            <p>registered</p>
-          </div>
-          <div
-            onClick={() => handleSideBarClick("email-sent")}
-            className={classNames(styles.sideBarItem, {
-              [styles.active]: activeSideBar === "email-sent",
-            })}
-          >
-            <p>email-sent</p>
-          </div>
-          <div
-            onClick={() => handleSideBarClick("reminder")}
-            className={classNames(styles.sideBarItem, {
-              [styles.active]: activeSideBar === "reminder",
-            })}
-          >
-            <p>Reminder</p>
-          </div>
-          <div
-            onClick={() => handleSideBarClick("waitinglist")}
-            className={classNames(styles.sideBarItem, {
-              [styles.active]: activeSideBar === "waitinglist",
-            })}
-          >
-            <p>waitinglist</p>
-          </div>
-          <div
-            onClick={() => handleSideBarClick("confirmed")}
-            className={classNames(styles.sideBarItem, {
-              [styles.active]: activeSideBar === "confirmed",
-            })}
-          >
-            <p>confirmed</p>
-          </div>
-          {levelsToShow.map((level) => (
+          {statusList.map(({ value, label }) => (
             <div
-              key={level.value}
-              onClick={() => handleSideBarClick(level.value)}
+              key={value}
+              onClick={() => handleSideBarClick(value)}
               className={classNames(styles.sideBarItem, {
-                [styles.active]: activeSideBar === level.value,
+                [styles.active]: activeSideBar === value,
               })}
             >
-              <p>{titleCase(level.value)}</p>
+              <p>{label}</p>
             </div>
           ))}
-          <div
-            onClick={() => handleSideBarClick("partyPass")}
-            className={classNames(styles.sideBarItem, {
-              [styles.active]: activeSideBar === "partyPass",
-            })}
-          >
-            <p>Partypass</p>
-          </div>
-
-          <div
-            onClick={() => handleSideBarClick("theme_class")}
-            className={classNames(styles.sideBarItem, {
-              [styles.active]: activeSideBar === "theme_class",
-            })}
-          >
-            <p>Themed Classes</p>
-          </div>
-          <div
-            onClick={() => handleSideBarClick("canceled")}
-            className={classNames(styles.sideBarItem, {
-              [styles.active]: activeSideBar === "canceled",
-            })}
-          >
-            <p>Canceled</p>
-          </div>
           <div
             onClick={() => handleSideBarClick("capacity")}
             className={classNames(styles.sideBarItem, {
@@ -502,15 +411,11 @@ export default function Dashboard({ users, tickets }) {
                   onChange={(e) => setStatus(e.target.value)}
                   className={styles.select}
                 >
-                  <option value="registered">1. Registration received</option>
-                  <option value="email-sent">
-                    2. Registration confirmation
-                  </option>
-                  <option value="confirmed">3. Payment received</option>
-                  <option value="reminder">4. Payment Reminder</option>
-                  <option value="waitinglist">5. Waiting list</option>
-                  <option value="canceled">6. registration canceled</option>
-                  <option value="out">7. Kick out</option>
+                  {statusList.map(({ value, label }) => (
+                    <option key={status} value={value}>
+                      {label}
+                    </option>
+                  ))}
                 </select>
                 <button
                   className={styles.statusButton}

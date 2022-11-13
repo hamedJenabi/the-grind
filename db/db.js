@@ -82,6 +82,7 @@ export async function insertRegistration(user) {
     country: user.country,
     ticket: user.ticket,
     role: user.role,
+    message: user.message,
     price: user.price,
     terms: user.terms,
   };
@@ -96,6 +97,7 @@ export async function insertRegistration(user) {
     "country",
     "ticket",
     "role",
+    "message",
     "price",
     "terms"
   )}
@@ -129,11 +131,6 @@ export async function updateUserInfo(user, totalPrice) {
     country: user.country,
     ticket: user.ticket,
     role: user.role,
-    level: user.level,
-    theme_class: user.theme_class,
-    competition: user.competition,
-    competition_role: user.competition_role,
-    competitions: user.competitions,
     price: totalPrice,
     terms: true,
   };
@@ -149,11 +146,6 @@ export async function updateUserInfo(user, totalPrice) {
     "country" = ${userData.country},
     "ticket"  = ${userData.ticket},
     "role" = ${userData.role},
-    "level" = ${userData.level},
-    "theme_class" = ${userData.theme_class},
-    "competition" = ${userData.competition},
-    "competition_role" = ${userData.competition_role},
-    "competitions" = ${userData.competitions},
     "price" = ${userData.price},
     "terms" = ${userData.terms}
   WHERE id = ${user.id}

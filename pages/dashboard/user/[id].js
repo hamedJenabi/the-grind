@@ -20,14 +20,9 @@ export default function User({ user }) {
       lastname: user.lastname,
       email: user.email,
       country: user.country,
-      level: user.level,
       ticket: user.ticket,
       role: user.role,
-      theme_class: user.theme_class || "",
-      competition: user.competition,
-      competition_role: user.competition_role,
-      competitions: user.competitions?.toString(),
-      theme_class: user.theme_class || "",
+      message: user.message,
       price: user.price,
       terms: user.terms,
     },
@@ -178,44 +173,8 @@ export default function User({ user }) {
             />
           </div>
           <div className={styles.row}>
-            <p>Competition:</p>
-            <p> {user.competition}</p>
-            <Modal
-              user={user}
-              handleUser={handleClick}
-              info="competition"
-              form={form}
-            />
-          </div>
-          <div className={styles.row}>
-            <p>Competition Role:</p>
-            <p> {user.competition_role}</p>
-            <Modal
-              user={user}
-              handleUser={handleClick}
-              info="competition_role"
-              form={form}
-            />
-          </div>
-          <div className={styles.row}>
-            <p>Competitions:</p>
-            <p> {user.competitions}</p>
-            <Modal
-              user={user}
-              handleUser={handleClick}
-              info="competitions"
-              form={form}
-            />
-          </div>
-          <div className={styles.row}>
-            <p>theme_class:</p>
-            <p> {user.theme_class}</p>
-            <Modal
-              user={user}
-              handleUser={handleClick}
-              info="theme_class"
-              form={form}
-            />
+            <p>Message:</p>
+            <p> {user.message}</p>
           </div>
         </div>
       </main>

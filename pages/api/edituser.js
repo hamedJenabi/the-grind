@@ -1,4 +1,9 @@
-import { titleCase, discounts, levelsToShow } from "../../utils/functions";
+import {
+  titleCase,
+  discounts,
+  levelsToShow,
+  statusList,
+} from "../../utils/functions";
 import {
   updateUserInfo,
   removeFromWaitingList,
@@ -38,11 +43,11 @@ const getTicketLabel = (ticket) => {
     return "Party Pass";
   }
   if (ticket === "weekend_pass") {
-    return "Full Pass";
+    return "Weekend Pass";
   }
 };
 export default async function edituser(req, response) {
-  const statusList = [
+  const statusListValues = [
     "registered",
     "reminder",
     "email-sent",
@@ -64,40 +69,12 @@ export default async function edituser(req, response) {
     country: req.body.country,
     role: req.body.role ?? "",
     ticket: req.body.ticket ?? "",
-    level: req.body.level,
-    theme_class: req.body.theme_class,
-    competition: req.body.competition,
-    competition_role: req.body.competition_role,
-    competitions: req.body.competitions,
+    price: req.body.price,
     terms: req.body.terms,
   };
-  const isGroupDiscount = discounts.some(
-    ({ email }) => email === req.body.email
-  );
-  const getPrice = (requestData, isGroupDiscount) => {
-    const initialPrice = requestData.ticket === "partyPass" ? 95 : 195;
-    const competitions =
-      requestData.competition === "yes"
-        ? requestData.competitions.split(",")?.length * 10
-        : 0;
-    const theme_class =
-      requestData.theme_class === "no" || requestData.theme_class === ""
-        ? 0
-        : 40;
-    const fullPassdiscount =
-      requestData.ticket === "weekend_pass" &&
-      requestData.competition === "yes" &&
-      requestData.competitions?.length > 0
-        ? -10
-        : 0;
-    const totalPrice =
-      initialPrice + competitions + theme_class + fullPassdiscount;
-    const output = isGroupDiscount
-      ? Math.round((totalPrice / 100) * 90)
-      : totalPrice;
-    return output;
-  };
-  const totalPrice = getPrice(requestData, isGroupDiscount);
+
+  console.log("requestData", requestData);
+  const totalPrice = requestData.price;
   /***** GET PRICE AND LEVEL */
   const level = titleCase(requestData.level);
   const ticket = getTicketLabel(requestData.ticket);
@@ -113,7 +90,7 @@ export default async function edituser(req, response) {
       });
   };
   let template = "";
-  if (!statusList.includes(req.body.status)) {
+  if (!statusListValues.includes(req.body.status)) {
     response.status(401).json();
   } else {
     if (req.body.status === "email-sent") {
@@ -126,9 +103,9 @@ export default async function edituser(req, response) {
       //   await removeFromWaitingList(ticketId);
       //   await addToCapacity(ticketId);
       // }
-      template = "d-eec50fc0f8824f0aa2c66a7196890ed5";
+      template = "d-4b57b76644e5420284af3ea0d3c9644b";
       const msg = {
-        from: "registration@bluesfever.eu",
+        from: "thegrindhelsinki@gmail.com",
         to: `${requestData.email}`,
         template_id: template,
         dynamic_template_data: {
@@ -136,30 +113,18 @@ export default async function edituser(req, response) {
           lastname: `${requestData.lastname}`,
           country: `${requestData.country}`,
           role: `${titleCase(requestData.role)}`,
-          level: `${getLevelLabelForEmail(requestData.level)}`,
           ticket: `${ticket}`,
-          themeClass: `${titleCase(requestData.theme_class)}`,
-          competition: requestData.competition === "yes" ? true : false,
-          competitionAnswer:
-            requestData.competition === "later" ? "I will decide later" : "No",
-          competition_role: `${requestData.competition_role}`,
-          competitions: requestData.competitions
-            ? `${requestData.competitions
-                .split(",")
-                .map((competition) => titleCase(competition))}`
-            : "",
           terms: `${requestData.terms}`,
           status: `${requestData.status}`,
-          isGroupDiscount: isGroupDiscount,
           price: `${totalPrice}`,
         },
       };
       await sendEmail(msg);
     }
     if (req.body.status === "reminder") {
-      template = "d-ffa39fe3a7e440ed94d71fac0170f3af";
+      template = "d-d15b5c2095f8480f890b51c160c43fd6";
       const msg = {
-        from: "registration@bluesfever.eu",
+        from: "thegrindhelsinki@gmail.com",
         to: `${requestData.email}`,
         template_id: template,
         dynamic_template_data: {
@@ -168,21 +133,10 @@ export default async function edituser(req, response) {
           date: `${requestData.date}`,
           country: `${requestData.country}`,
           role: `${titleCase(requestData.role)}`,
-          level: `${getLevelLabelForEmail(requestData.level)}`,
           ticket: `${ticket}`,
-          themeClass: `- ${titleCase(requestData.theme_class)}`,
-          competition: requestData.competition === "yes" ? true : false,
-          competitionAnswer:
-            requestData.competition === "later" ? "I will decide later" : "No",
-          competition_role: `${requestData.competition_role}`,
-          competitions: requestData.competitions
-            ? `${requestData.competitions
-                .split(",")
-                .map((competition) => titleCase(competition))}`
-            : "",
+
           terms: `${requestData.terms}`,
           status: `${requestData.status}`,
-          isGroupDiscount: isGroupDiscount,
           price: `${totalPrice}`,
         },
       };
@@ -190,29 +144,18 @@ export default async function edituser(req, response) {
     }
     if (req.body.status === "waitinglist") {
       const msg = {
-        from: "registration@bluesfever.eu",
+        from: "thegrindhelsinki@gmail.com",
         to: `${requestData.email}`,
-        template_id: "d-47f29cd18c134b89bf5496573737abdc",
+        template_id: "d-75944ebe0ce746299129ec916c7704e0",
         dynamic_template_data: {
           firstname: `${requestData.firstname}`,
           lastname: `${requestData.lastname}`,
           country: `${requestData.country}`,
           role: `${titleCase(requestData.role)}`,
-          level: `${getLevelLabelForEmail(requestData.level)}`,
           ticket: `${ticket}`,
           themeClass: `${titleCase(requestData.theme_class)}`,
-          competition: requestData.competition === "yes" ? true : false,
-          competitionAnswer:
-            requestData.competition === "later" ? "I will decide later" : "No",
-          competition_role: `${requestData.competition_role}`,
-          competitions: requestData.competitions
-            ? `${requestData.competitions
-                .split(",")
-                .map((competition) => titleCase(competition))}`
-            : "",
           terms: `${requestData.terms}`,
           status: `${requestData.status}`,
-          isGroupDiscount: isGroupDiscount,
           price: `${totalPrice}`,
         },
       };
@@ -220,64 +163,40 @@ export default async function edituser(req, response) {
     }
     if (req.body.status === "confirmed") {
       const msg = {
-        from: "registration@bluesfever.eu",
+        from: "thegrindhelsinki@gmail.com",
         to: `${requestData.email}`,
-        template_id: "d-9a1d3b06c6fb43f69a1ee68b940ebe35",
+        template_id: "d-bba04e98dc914547b9e36d8f6709f49c",
         dynamic_template_data: {
           firstname: `${requestData.firstname}`,
           lastname: `${requestData.lastname}`,
           country: `${requestData.country}`,
           role: `${titleCase(requestData.role)}`,
-          level: `${getLevelLabelForEmail(requestData.level)}`,
           ticket: `${ticket}`,
-          themeClass: `${titleCase(requestData.theme_class)}`,
-          competition: requestData.competition === "yes" ? true : false,
-          competitionAnswer:
-            requestData.competition === "later" ? "I will decide later" : "No",
-          competition_role: `${requestData.competition_role}`,
-          competitions: requestData.competitions
-            ? `${requestData.competitions
-                .split(",")
-                .map((competition) => titleCase(competition))}`
-            : "",
           terms: `${requestData.terms}`,
           status: `${requestData.status}`,
-          isGroupDiscount: isGroupDiscount,
           price: `${totalPrice}`,
         },
       };
       await sendEmail(msg);
     }
     // and more conditions
-    if (req.body.status === "out") {
+    if (req.body.status === "cancelled") {
       const msg = {
-        from: "registration@bluesfever.eu",
+        from: "thegrindhelsinki@gmail.com",
         to: `${requestData.email}`,
-        template_id: "d-792c656cb1a14df6987d0b6867f5295b",
+        template_id: "d-5485670ec4ff45e98553fdb8f82fb178",
         dynamic_template_data: {
           firstname: `${requestData.firstname}`,
           lastname: `${requestData.lastname}`,
           country: `${requestData.country}`,
           role: `${titleCase(requestData.role)}`,
-          level: `${getLevelLabelForEmail(requestData.level)}`,
           ticket: `${ticket}`,
-          themeClass: `${titleCase(requestData.theme_class)}`,
-          competition: requestData.competition === "yes" ? true : false,
-          competitionAnswer:
-            requestData.competition === "later" ? "I will decide later" : "No",
-          competition_role: `${requestData.competition_role}`,
-          competitions: requestData.competitions
-            ? `${requestData.competitions
-                .split(",")
-                .map((competition) => titleCase(competition))}`
-            : "",
           terms: `${requestData.terms}`,
           status: `${requestData.status}`,
-          isGroupDiscount: isGroupDiscount,
           price: `${totalPrice}`,
         },
       };
-      await sendEmail(msg);
+      // await sendEmail(msg);
     }
     if (req.body.status === "cancelled") {
       const ticketName =

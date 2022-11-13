@@ -10,7 +10,9 @@ exports.up = async (sql) => {
 			ticket VARCHAR NOT NULL,
 			role VARCHAR (100),
 			country VARCHAR, 
+			message VARCHAR,
 			price VARCHAR (100),
+
 			terms boolean
 	)
 	`;
