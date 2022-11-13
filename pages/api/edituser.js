@@ -180,7 +180,7 @@ export default async function edituser(req, response) {
       await sendEmail(msg);
     }
     // and more conditions
-    if (req.body.status === "cancelled") {
+    if (req.body.status === "out") {
       const msg = {
         from: "thegrindhelsinki@gmail.com",
         to: `${requestData.email}`,

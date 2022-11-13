@@ -66,4 +66,8 @@ export const statusList = [
     value: "canceled",
     label: "6. registration canceled",
   },
+  {
+    value: "out",
+    label: "7. They are out",
+  },
 ];
