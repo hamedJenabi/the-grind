@@ -196,7 +196,7 @@ export default async function edituser(req, response) {
           price: `${totalPrice}`,
         },
       };
-      // await sendEmail(msg);
+      await sendEmail(msg);
     }
     if (req.body.status === "cancelled") {
       const ticketName =
